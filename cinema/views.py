@@ -5,13 +5,18 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 
 from cinema.models import Movie, Genre, Actor, CinemaHall
-from cinema.serializers import MovieSerializer, GenreSerializer, ActorSerializer, CinemaHallSerializer
+from cinema.serializers import (
+    MovieSerializer,
+    GenreSerializer,
+    ActorSerializer,
+    CinemaHallSerializer,
+)
 
 
 # Movie Views(ModelViewSet and routers)
 class MovieViewSet(viewsets.ModelViewSet):
-   queryset = Movie.objects.all()
-   serializer_class = MovieSerializer
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
 
 
 # Genre Views(APIView)
@@ -27,6 +32,7 @@ class GenreListView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class GenreDetailView(APIView):
     def get_object(self, pk):
@@ -53,45 +59,43 @@ class GenreDetailView(APIView):
 
 # Actor Views(GenericAPIView With Mixins)
 class ActorListView(
-   mixins.ListModelMixin,
-   mixins.CreateModelMixin,
-   generics.GenericAPIView
+    mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView
 ):
-   queryset = Actor.objects.all()
-   serializer_class = ActorSerializer
+    queryset = Actor.objects.all()
+    serializer_class = ActorSerializer
 
-   def get(self, request, *args, **kwargs):
-       return self.list(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
-   def post(self, request, *args, **kwargs):
-       return self.create(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
 
 
 class ActorDetailView(
-   mixins.RetrieveModelMixin,
-   mixins.UpdateModelMixin,
-   mixins.DestroyModelMixin,
-   generics.GenericAPIView
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    generics.GenericAPIView,
 ):
-   queryset = Actor.objects.all()
-   serializer_class = ActorSerializer
+    queryset = Actor.objects.all()
+    serializer_class = ActorSerializer
 
-   def get(self, request, *args, **kwargs):
-       return self.retrieve(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
-   def put(self, request, *args, **kwargs):
-       return self.update(request, *args, **kwargs)
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
-   def delete(self, request, *args, **kwargs):
-       return self.destroy(request, *args, **kwargs)
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 # CinemaHall Views(GenericViewSet)
 class CinemaHallListView(generics.ListCreateAPIView):
-   queryset = CinemaHall.objects.all()
-   serializer_class = CinemaHallSerializer
+    queryset = CinemaHall.objects.all()
+    serializer_class = CinemaHallSerializer
 
 
 class CinemaHallDetailView(generics.RetrieveUpdateDestroyAPIView):
-   queryset = CinemaHall.objects.all()
-   serializer_class = CinemaHallSerializer
+    queryset = CinemaHall.objects.all()
+    serializer_class = CinemaHallSerializer
