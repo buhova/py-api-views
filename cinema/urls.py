@@ -3,35 +3,44 @@ from rest_framework import routers
 
 from cinema.views import (
     MovieViewSet,
-    GenreListView,
-    GenreDetailView,
-    ActorListView,
-    ActorDetailView,
-    CinemaHallListView,
-    CinemaHallDetailView,
+    GenreList,
+    GenreDetail,
+    ActorList,
+    ActorDetail,
+    CinemaHallViewSet,
 )
 
 router = routers.DefaultRouter()
-router.register("movies", MovieViewSet, basename="movie")
+router.register("movies", MovieViewSet)
+cinema_hall_list = CinemaHallViewSet.as_view(actions={
+           "get": "list",
+           "post": "create",
+       })
+cinema_hall_detail = CinemaHallViewSet.as_view(actions={
+           "get": "retrieve",
+           "put": "update",
+           "patch": "partial_update",
+           "delete": "destroy",
+       })
 
 urlpatterns = [
     # Movie (handled via router)
     path("", include(router.urls)),
     # Genre (APIView)
-    path("genres/", GenreListView.as_view(), name="genre-list"),
-    path("genres/<int:pk>/", GenreDetailView.as_view(), name="genre-detail"),
+    path("genres/", GenreList.as_view(), name="genre-list"),
+    path("genres/<int:pk>/", GenreDetail.as_view(), name="genre-detail"),
     # Actor (GenericAPIView with mixins)
-    path("actors/", ActorListView.as_view(), name="actor-list"),
-    path("actors/<int:pk>/", ActorDetailView.as_view(), name="actor-detail"),
+    path("actors/", ActorList.as_view(), name="actor-list"),
+    path("actors/<int:pk>/", ActorDetail.as_view(), name="actor-detail"),
     # CinemaHall (GenericViewSet-style using generic views)
     path(
         "cinema_halls/",
-        CinemaHallListView.as_view(),
+        cinema_hall_list,
         name="cinema-hall-list"
     ),
     path(
         "cinema_halls/<int:pk>/",
-        CinemaHallDetailView.as_view(),
+        cinema_hall_detail,
         name="cinema-hall-detail",
     ),
 ]
